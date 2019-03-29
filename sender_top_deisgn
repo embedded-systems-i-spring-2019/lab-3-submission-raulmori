@@ -1,22 +1,3 @@
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/15/2019 11:58:01 AM
--- Design Name: 
--- Module Name: sender_top - Structural
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
