@@ -39,7 +39,7 @@ architecture structural of uart is                      --Notice that we are usi
 
         begin
         
-                r_x: uart_rx port map(                  --Here we just start connecting the Entity Parts of "TOP" to the Component-Entity Parts of "rx" and "tx"
+                r_x: uart_rx port map(                  --Here we just start connecting the Component-Entity Parts of "rx" to the Main-Entity Parts of "TOP"
                             clk => clk,
                             en => en,
                             rx => rx,
@@ -47,7 +47,7 @@ architecture structural of uart is                      --Notice that we are usi
                             newChar => newChar,
                             char => charRec);
         
-                t_x: uart_tx port map(
+                t_x: uart_tx port map(                  --Here we just start connecting the Component-Entity Parts of "tx" to the Main-Entity Parts of "TOP"
                             clk => clk,
                             en => en,
                             send => send,
