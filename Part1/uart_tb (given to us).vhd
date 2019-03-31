@@ -1,4 +1,3 @@
---
 -- written by Raul Mori
 -- Spring 2018
 -- This is just a TESTBENCH for the "TOP" design
