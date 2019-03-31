@@ -1,59 +1,105 @@
---
--- written by Raul Mori
--- Spring 2018
---Since this is a "TOP" design that brings in other designs, we will use "structural design" for this code
----------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 
-library ieee;
-use ieee.std_logic_1164.all;
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
 
-entity uart is
-        port (
-            clk, en, send, rx, rst      : in std_logic;
-            charSend                    : in std_logic_vector (7 downto 0);
-            ready, tx, newChar          : out std_logic;
-            charRec                     : out std_logic_vector (7 downto 0)
-);
-end uart;
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity sender_top is
+        Port (
+                   TXD : in STD_LOGIC;
+                   btn : in STD_LOGIC_VECTOR (1 downto 0);
+                   clk : in STD_LOGIC;
+                   RXD : out STD_LOGIC;
+                   CTS : out STD_LOGIC;
+                   RTS : out STD_LOGIC);
+end sender_top;
 
 
-architecture structural of uart is                      --Notice that we are using Structural Model
+architecture Structural of sender_top is
 
-        component uart_tx port                  --Here we call the Behavioral-Design of "uart_tx"
-                (
-                clk, en, send, rst  : in std_logic;
-                char                : in std_logic_vector (7 downto 0);
-                ready, tx           : out std_logic
-                );
+        signal rstbtn, btn1: std_logic;
+        signal div, snd, ready : STD_LOGIC;
+        signal char: std_logic_vector(7 downto 0);
+--------------------------------------------------------------------------       
+
+        component uart
+                port (
+                      clk, en, send, rx, rst      : in std_logic;
+                      charSend                    : in std_logic_vector (7 downto 0);
+                      ready, tx, newChar          : out std_logic;
+                      charRec                     : out std_logic_vector (7 downto 0));
         end component;
-
-
-        component uart_rx port                   --Here we call the Behavioral-Design of "uart_rx"
-             (
-                clk, en, rx, rst    : in std_logic;
-                newChar             : out std_logic;
-                char                : out std_logic_vector (7 downto 0)
-             );
+--------------------------------------------------------------------------       
+        component debounce
+                Port (
+                       clk : in STD_LOGIC;
+                       btn : in STD_LOGIC;
+                       debounced : out STD_LOGIC);
         end component;
-
-
-        begin
         
-                r_x: uart_rx port map(                  --Here we just start connecting the Component-Entity Parts of "rx" to the Main-Entity Parts of "TOP"
-                            clk => clk,
-                            en => en,
-                            rx => rx,
-                            rst => rst,
-                            newChar => newChar,
-                            char => charRec);
+--------------------------------------------------------------------------       
+   
+        component clockdivider
+                Port (
+                      clk_slow : out STD_LOGIC;
+                      clk : in STD_LOGIC);
+        end component;
         
-                t_x: uart_tx port map(                  --Here we just start connecting the Component-Entity Parts of "tx" to the Main-Entity Parts of "TOP"
-                            clk => clk,
-                            en => en,
-                            send => send,
-                            rst => rst,
-                            char => charSend,
-                            ready => ready,
-                            tx => tx);
+--------------------------------------------------------------------------       
 
-end structural;
+        component sender
+                Port ( 
+                       rst : in STD_LOGIC;
+                       clk : in STD_LOGIC;
+                       en : in STD_LOGIC;
+                       btn : in STD_LOGIC;
+                       ready : in STD_LOGIC;
+                       send : out STD_LOGIC;
+                       char : out STD_LOGIC_VECTOR (7 downto 0));
+        end component;
+--------------------------------------------------------------------------       
+
+    
+        begin                           --We start the PORT-MAPS to connect ENTITY-COMPONENT with MAIN-TEMPORARY signals
+                rts <= '0';
+                cts <= '0';
+                
+                clkdiv: clockdivider port map(
+                        clk=> clk,
+                        clk_slow =>div);
+                        
+                rstdbnc: debounce port map(
+                             clk => clk,
+                             btn => btn(0),
+                             debounced => rstbtn);
+                             
+                btndbnc:debounce port map(
+                             clk => clk,
+                             btn => btn(1),
+                             debounced => btn1);
+                             
+                snder: sender port map(
+                             clk => clk,
+                             btn => btn1,
+                             en => div,
+                             ready => ready,
+                             rst => rstbtn,
+                             send => snd,
+                             char => char);
+                             
+                u5: uart port map(
+                             clk => clk,
+                             en => div,
+                             send => snd,
+                             rx => TXD,
+                             rst => rstbtn,
+                             charSend => char,
+                             ready => ready, 
+                             tx => RXD);
+end Structural;
