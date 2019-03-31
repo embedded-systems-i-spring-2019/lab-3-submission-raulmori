@@ -31,7 +31,7 @@ architecture Behavioral of uart_tx is
         signal D :std_logic_vector(7 downto 0) := X"00";
 
 
-        begin               --This starts the part  that has to do with the recieving side
+        begin               --This starts the part  that has to do with the recieving side Of the Finite State Machine (FSM)
                 FSM:process(clk)
                 variable count : natural := 0;
                         begin
