@@ -40,7 +40,7 @@ architecture Structural of sender_top is
                 Port (
                        clk : in STD_LOGIC;
                        btn : in STD_LOGIC;
-                       debounced : out STD_LOGIC);
+                       dbnc : out STD_LOGIC);
         end component;
         
 --------------------------------------------------------------------------       
@@ -76,11 +76,11 @@ architecture Structural of sender_top is
                 rstdbnc: debounce
                     port map(clk => clk,
                              btn => btn(0),
-                             debounced => rstbtn);
+                             dbnc => rstbtn);
                 btndbnc:debounce
                     port map(clk => clk,
                              btn => btn(1),
-                             debounced => btn1);
+                             dbnc => btn1);
                 snder: sender
                     port map(clk => clk,
                              btn => btn1,
