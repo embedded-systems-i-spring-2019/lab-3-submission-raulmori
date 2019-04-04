@@ -45,7 +45,7 @@ architecture Structural of sender_top is
         
 --------------------------------------------------------------------------       
    
-        component clockdivider
+        component clk_div
                 Port (
                       clk_slow : out STD_LOGIC;
                       clk : in STD_LOGIC);
@@ -70,7 +70,7 @@ architecture Structural of sender_top is
                 rts <= '0';
                 cts <= '0';
                 
-                clkdiv: clockdivider
+                clkdiv: clk_div
                     port map(clk=> clk,
                              clk_slow =>div);
                 rstdbnc: debounce
