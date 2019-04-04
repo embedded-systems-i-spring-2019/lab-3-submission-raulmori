@@ -47,7 +47,7 @@ architecture Structural of sender_top is
    
         component clk_div
                 Port (
-                      clk_slow : out STD_LOGIC;
+                      div : out STD_LOGIC;
                       clk : in STD_LOGIC);
         end component;
         
@@ -72,7 +72,7 @@ architecture Structural of sender_top is
                 
                 clkdiv: clk_div
                     port map(clk=> clk,
-                             clk_slow =>div);
+                             div =>div);
                 rstdbnc: debounce
                     port map(clk => clk,
                              btn => btn(0),
