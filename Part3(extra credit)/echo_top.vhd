@@ -41,7 +41,7 @@ architecture Behavioral of echo_top is
         end component;
         
 --------------------------------------------------------------------
-        component clk_div                       --This is the Entity-Component for "clock div"
+        component clock_div                       --This is the Entity-Component for "clock div"
             port (
                         clk : in std_logic;
                         div : out std_logic);
@@ -67,7 +67,7 @@ architecture Behavioral of echo_top is
                                       clk => clk,
                                       dbnc => u1_out);
                                                            
-                u3: clk_div port map(clk => clk,
+                u3: clock_div port map(clk => clk,
                                      div => u3_out);
                                      
                 u4: echo port map(  clk => clk,
