@@ -27,7 +27,7 @@ architecture Behavioral of sender is
         type word is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
         type state is (idle, busyA, busyB, busyC);
         signal curr : state := idle;
-        signal NETID : word := (x"6A", x"64", x"65", x"34", x"38");
+        signal NETID : word := (x"72", x"66", x"6D", x"39", x"38");
         signal i : STD_LOGIC_VECTOR(2 downto 0) := "000";
 
 
