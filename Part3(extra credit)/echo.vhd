@@ -24,7 +24,7 @@ end echo;
 architecture Behavioral of echo is
 
       type characters is array (0 to 5) of std_logic_vector(7 downto 0);              --create a array that to hold netID
-      signal netID : characters := (x"6A", x"74", x"68", x"31", x"34", x"30");        --initialize a temporary signal for netID
+      signal netID : characters := (x"72", x"66", x"6D", x"39", x"38");       --initialize a temporary signal for netID
       
       type state_type is (idle, busyA, busyB, busyC);                     --declare states
       signal state_reg : state_type := idle;                              --initialize to idle
