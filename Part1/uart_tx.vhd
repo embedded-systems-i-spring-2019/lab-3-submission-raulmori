@@ -1,4 +1,6 @@
 
+--We use the SENDING-UART as reference to buid this RECEIVING-UART here
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
