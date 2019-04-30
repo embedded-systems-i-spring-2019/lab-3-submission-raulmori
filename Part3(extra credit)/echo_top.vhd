@@ -1,3 +1,4 @@
+--Remember that the TOP-DESIGN for "ECHO" will be almost the same as "SENDER"
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
