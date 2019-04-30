@@ -86,10 +86,10 @@ architecture Structural of sender_top is
                                      dbnc => rstbtn             --Here we convert the OUTPUT of one of our "BUTTON"S into a TEMPORARY signal "RSTBTN"
                                           );
                         
-                btndbnc:debounce port map(
+                btndbnc: debounce port map(
                                      clk => clk,        --Here we connect the MAIN-CLOCK to one of the "BUTTONS"       
                                      btn => btn(1),             --Here we connect one of the MAIN "Bit-Button" to the INPUT of one of our BUTTONS called "BTN"
-                                     dbnc => btn1.              --Here we convert the OUTPUT of one of our "BUTTON"S into a TEMPORARY signal "BTN1"
+                                     dbnc => btn1              --Here we convert the OUTPUT of one of our "BUTTON"S into a TEMPORARY signal "BTN1"
                                         );
                 
                 snder: sender port map(
@@ -102,7 +102,7 @@ architecture Structural of sender_top is
                                      char => char       --Here we convert the OUTPUT of the "SENDER'S" "CHAR" into a TEMPORARY signal called "CHAR"
                                      );
                          
-                u5: uart port map.  (
+                u5: uart port map  (
                                      clk => clk,         --Here we connect the MAIN-CLOCK to  the "UART"
                                      en => div,         --Here we connect the TEMPORARY signal for the "Clock_Divider" OUTPUT and connect it to the "ENABLE" of the "UART"
                                      send => snd,        --Here the TEMPORARY Signal "SND" is connected to the INPUT of the "UART" called "SEND"
