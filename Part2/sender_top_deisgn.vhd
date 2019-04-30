@@ -28,7 +28,7 @@ architecture Structural of sender_top is
         signal char: std_logic_vector(7 downto 0);
 --------------------------------------------------------------------------       
 
-        component uart
+        component uart                  --Here we call "UART" which is another TOP-DESIGN
                 port (
                       clk, en, send, rx, rst      : in std_logic;
                       charSend                    : in std_logic_vector (7 downto 0);
@@ -36,7 +36,7 @@ architecture Structural of sender_top is
                       charRec                     : out std_logic_vector (7 downto 0));
         end component;
 --------------------------------------------------------------------------       
-        component debounce
+        component debounce              --Here we call the "BUTTON"
                 Port (
                        clk : in STD_LOGIC;
                        btn : in STD_LOGIC;
@@ -45,7 +45,7 @@ architecture Structural of sender_top is
         
 --------------------------------------------------------------------------       
    
-        component clk_div
+        component clk_div               --Here we call the "CLOCK_ENABLE"
                 Port (
                       div : out STD_LOGIC;
                       clk : in STD_LOGIC);
@@ -53,7 +53,7 @@ architecture Structural of sender_top is
         
 --------------------------------------------------------------------------       
 
-        component sender
+        component sender                --Here we call the "SENDER" which is relative to the'UART_TX"
                 Port ( 
                        rst : in STD_LOGIC;
                        clk : in STD_LOGIC;
@@ -67,8 +67,9 @@ architecture Structural of sender_top is
 
     
         begin                           --We start the PORT-MAPS to connect ENTITY-COMPONENT with MAIN-TEMPORARY signals
-                rts <= '0';
-                cts <= '0';
+                
+                rts <= '0';                     --IMPORANT "RTS" has to be Grounded
+                cts <= '0';                     --IMPORANT "CTS" has to be Grounded
                 
                 clkdiv: clk_div
                     port map(clk=> clk,
