@@ -14,7 +14,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity echo_top is
       Port (
-            TXD, clk, btn : in std_logic;
+            TXD, btn : in std_logic;
             clk           : in std_logic;
             char_in       : in std_logic_vector(7 downto 0);
             CTS, RTS, RXD : out std_logic);
