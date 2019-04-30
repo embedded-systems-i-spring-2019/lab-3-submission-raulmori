@@ -46,7 +46,7 @@ architecture Behavioral of sender is
                                 if en = '1' then                        --Notice for this new part there must be an extra "ENDIF"
                                         if rst = '1' then                       --If "RESET" BUTTON is pressed    
                                                 send <= '0';
-                                                char <= x"00";                          --Clears all Letters
+                                                char <= x"00";                          --Clears all Letters. The (x"00") is a shortcut for "0000000"
                                                 i <= "000";                             
                                                 curr <= idle;                           --We go back to the "IDLE" "STATE"
                                         end if;
