@@ -52,8 +52,7 @@ architecture Behavioral of uart_tx is
                                                     when idle => 
                                                             ready <= '1';             --Remember that "READY" is only "1" When we are in the "IDLE" "STATE"
                                                             tx <= '1';              
-                                                            if 
-                                                              = '1' then
+                                                            if  send = '1'  then
                                                                 curr <= start;        --This sets the Current "STATE" to the  "STATE" of "START"
                                                             end if;
                                                     when start => 
