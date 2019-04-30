@@ -61,26 +61,26 @@ architecture Behavioral of echo_top is
 
         begin
 
-                RTS <= '0';      --set these to ground (same as just single bit "0")
-                CTS <= '0';
+                RTS <= '0';                           --IMPORANT "RTS" has to be Grounded
+                CTS <= '0';                           --IMPORANT "CTS" has to be Grounded
                 
                 --Here we start the port maps. This just just so we can connect values from "Entity-Component" values with "Main-Temporary" values
                 u1: debounce port map(
                                       btn => btn,
                                       clk => clk,
-                                      dbnc => u1_out
+                                      dbnc => u1_out        --The button OUTPUT is connected to TEMPORARY signal of "u1_out"
                                       );
                                                            
-                u3: clk_div port map(
+                u3: clk_div port map(                       --This is the Conceptual "CLOCK-ENABLE"
                                      clk => clk,
-                                     div => u3_out
+                                     div => u3_out          --this is the OUTPUT of the "Clk_En" connected to the TEMPORARY Signal "u3_out"
                                     );
                                      
                 u4: echo port map (  
                                     clk => clk,
                                     newChar => u1_out,
                                     charin => char_in,
-                                    en => u3_out,
+                                    en => u3_out,                 --Here we connect the "EN" to the OUTPUT of the "Modified-Clock"
                                     ready => u5_ready,
                                     charOut => u4_char,
                                     send => u4_send
