@@ -1,4 +1,5 @@
 --Remember that the TOP-DESIGN for "ECHO" will be almost the same as "SENDER"
+--Notice here that we use a single "BUTTON"
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -67,20 +68,20 @@ architecture Behavioral of echo_top is
                 
                 --Here we start the port maps. This just just so we can connect values from "Entity-Component" values with "Main-Temporary" values
                 u1: debounce port map(
-                                      btn => btn,
-                                      clk => clk,
+                                      btn => btn,               --Here  the Main BUTTON is the connected the INPUT of the "BUTTON" called "BTN"
+                                      clk => clk,               --Here the Main CLOCK is connected to the INPUT of the BUTTON called "CLK"
                                       dbnc => u1_out        --The button OUTPUT is connected to TEMPORARY signal of "u1_out"
                                       );
                                                            
                 u3: clk_div port map(                       --This is the Conceptual "CLOCK-ENABLE"
-                                     clk => clk,
+                                     clk => clk,                --Here the Main CLOCK is connected to the INPUT of the CLOCK-DIVIDER called "CLK"
                                      div => u3_out          --this is the OUTPUT of the "Clk_En" connected to the TEMPORARY Signal "u3_out"
                                     );
                                      
                 u4: echo port map (  
-                                    clk => clk,
-                                    newChar => u1_out,
-                                    charin => char_in,
+                                    clk => clk,                  --Here the Main CLOCK is connected to the INPUT of the CLOCK-DIVIDER called "CLK"
+                                    newChar => u1_out,          --Here TEMPORARY "u1_out" is connected to the INPUT of ECHO called "newChar" 
+                                    charin => char_in,              --Here the Main "CHAR_IN" is connected to the INPUT of the ECHO called "charin"
                                     en => u3_out,                 --Here we connect the "EN" to the OUTPUT of the "Modified-Clock"
                                     ready => u5_ready,
                                     charOut => u4_char,
