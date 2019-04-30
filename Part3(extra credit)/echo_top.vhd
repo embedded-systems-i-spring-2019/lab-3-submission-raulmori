@@ -12,9 +12,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity echo_top is
-  Port (TXD, clk, btn : in std_logic;
-        char_in : in std_logic_vector(7 downto 0);
-        CTS, RTS, RXD : out std_logic);
+      Port (
+            TXD, clk, btn : in std_logic;
+            clk           : in std_logic;
+            char_in       : in std_logic_vector(7 downto 0);
+            CTS, RTS, RXD : out std_logic);
 end echo_top;
 
 architecture Behavioral of echo_top is
@@ -63,29 +65,36 @@ architecture Behavioral of echo_top is
                 CTS <= '0';
                 
                 --Here we start the port maps. This just just so we can connect values from "Entity-Component" values with "Main-Temporary" values
-                u1: debounce port map(btn => btn,
+                u1: debounce port map(
+                                      btn => btn,
                                       clk => clk,
-                                      dbnc => u1_out);
+                                      dbnc => u1_out
+                                      );
                                                            
-                u3: clk_div port map(clk => clk,
-                                     div => u3_out);
+                u3: clk_div port map(
+                                     clk => clk,
+                                     div => u3_out
+                                    );
                                      
-                u4: echo port map(  clk => clk,
+                u4: echo port map (  
+                                    clk => clk,
                                     newChar => u1_out,
                                     charin => char_in,
                                     en => u3_out,
                                     ready => u5_ready,
                                     charOut => u4_char,
-                                    send => u4_send);
+                                    send => u4_send
+                                  );
                                     
-                u5: uart port map(charSend => u4_char,
+                u5: uart port map(
+                                  charSend => u4_char,
                                   clk => clk,
                                   en => u3_out,
                                   rst => '0',
                                   rx => TXD,
                                   send => u4_send,
                                   ready => u5_ready,
-                                  tx => RXD);
-
+                                  tx => RXD
+                                  );
 
 end Behavioral;
