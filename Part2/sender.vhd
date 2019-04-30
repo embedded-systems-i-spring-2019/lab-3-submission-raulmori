@@ -29,13 +29,13 @@ end sender;
 
 architecture Behavioral of sender is
 
-        signal NETID : word := (x"72", x"66", x"6D", x"39", x"38");          --These are "ASCII codes" in Hexadecimal form. Notice we have 5 characters.
+        
         signal i : STD_LOGIC_VECTOR(2 downto 0) := "000";                       --This is the BINARY-COUNTER. Notice it was initialized to "0"
 
         type word is array (0 to 4) of STD_LOGIC_VECTOR(7 downto 0);
         type state is (idle, busyA, busyB, busyC);                              --These are the TEMPORARY "Type" "STATES".
         signal curr : state := idle;                                            --Here we made the Initial "STATE" be "IDLE"
-           
+        signal NETID : word := (x"72", x"66", x"6D", x"39", x"38");          --These are "ASCII codes" in Hexadecimal form. Notice we have 5 characters. If we put this as the First LINE, the code won't work   
         
 
 
@@ -53,11 +53,11 @@ architecture Behavioral of sender is
                                 
                                         case curr is                    --The CASE Conditions start Here
                                                 when idle =>
-                                                        if ready = '1' 
+                                                        if ready = '1' then
                                                                 if btn = '1' then
                                                                         if unsigned(i) < 5 then         --"5" is the number of characters we use for our "NETID"
                                                                                 send <= '1';            
-                                                                                char <= netid(natural(to_integer(unsigned(i))));                       
+                                                                                char <= NETID (natural(to_integer(unsigned(i))));                       
                                                                                 i <= STD_logic_VECTOR(unsigned(i) + 1);
                                                                                 curr <= busyA;          --Here the Present-State become "BusyA"
                                                                         else                      --Here we we have the same conditions for "READY" and "BUTTON" but now "i" is equal to "5"
@@ -71,12 +71,12 @@ architecture Behavioral of sender is
                                                             send <= '0';                     --Here we change "SEND" to "0"
                                                             curr <= busyC; 
                                                 when busyC =>
-                                                          if ready = '1' 
+                                                          if ready = '1' then
                                                                   if btn = '0' then
                                                                         curr <= idle;
                                                                   end if;
                                                           end if;    
-                                                when others => state_reg <= idle;                  
+                                                when others => curr <= idle;                  
                                         end case;
                                 end if;        
                         end if;
