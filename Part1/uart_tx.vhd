@@ -14,20 +14,21 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity uart_tx is
-        Port ( 
+             Port ( 
                    clk : in STD_LOGIC;
                    en : in STD_LOGIC;
                    send : in STD_LOGIC;
                    rst : in STD_LOGIC;
                    char : in STD_LOGIC_VECTOR (7 downto 0);
                    ready : out STD_LOGIC;
-                   tx : out STD_LOGIC);
+                   tx : out STD_LOGIC
+                 );
 end uart_tx;
 
 
 architecture Behavioral of uart_tx is
 
-        type state is (idle, start, data);
+        type state is (idle, start, data);      --These are the TEMPORARY "TYPES" for the Finite-State-Machine's "STATES"
         signal curr : state := idle;
         
         signal D :std_logic_vector(7 downto 0) := X"00";
