@@ -78,14 +78,14 @@ architecture fsm of uart_rx is
                                                                  d <= maj & d(7 downto 1);
                                                                  count <= std_logic_vector(unsigned(count) + 1);     --Notice here that we use the method of changing the "COUNT" in Bit-Form to UNSIGNED form
                                                          elsif maj <= '1' then                      --Remember we use an"elsif" because we can't simply add another "if" because it creates a 2nd individual loop
-                                                                 curr <= idle;
+                                                                 curr <= idle;                     --This returns us to the Initial "STATE"
                                                                  newChar <= '1';
                                                                  char <= d;
                                                          else
-                                                                curr <= idle;
+                                                                curr <= idle;                       --This returns us to the Initial "STATE"
                                                          end if;
-                                                 when others =>                           --This is good programming practice, in case any other "STATE" is detected, it go back to the First "STATE"
-                                                         curr <= idle;
+                                                 when others =>                           --This is good programming practice, in case any other "STATE" is detected.
+                                                         curr <= idle;           -- It go back to the Initial "STATE"
                                                      
                                          end case;                          --This just ends the the "CASE" we opened
                                  end if;                                    --This just ends the very first "if" we declared
