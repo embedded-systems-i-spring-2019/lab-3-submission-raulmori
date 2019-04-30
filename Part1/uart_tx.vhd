@@ -54,6 +54,7 @@ architecture Behavioral of uart_tx is
                                                             tx <= '1';              
                                                             if  send = '1'  then
                                                                 curr <= start;        --This sets the Current "STATE" to the  "STATE" of "START"
+                                                                D <= char;
                                                             end if;
                                                     when start => 
                                                             ready <='0';
