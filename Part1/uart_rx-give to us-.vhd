@@ -1,8 +1,4 @@
---
--- written by Raul Mori
--- Spring 2018
---
----------------------------------------------------------------------------
+--Notice that this FINITE-STATE-MACHINE was made using TEMPLATES from Chapter#11 of the VHDLD book 
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -11,7 +7,8 @@ use ieee.numeric_std.all;
 
 entity uart_rx is
          port (
-         clk, en, rx, rst    : in std_logic;             --Here we have the, "Clock", "Enable", 
+         clk                 : in std_logic;             --Here we have the, "Clock", "Enable", 
+         en, rx, rst         : in std_logic; 
          newChar             : out std_logic;
          char                : out std_logic_vector (7 downto 0)  --Both outputs are the same except one is 8-bit
     );
@@ -20,7 +17,7 @@ end uart_rx;
 
 architecture fsm of uart_rx is
   
-         type state is (idle, start, data);                   -- state type enumeration and state variable
+         type state is (idle, start, data);                   --These are the TEMPORARY "TYPES" for the Finite-State-Machine's "STATES"
          signal curr : state := idle;
         
          signal d : std_logic_vector (7 downto 0) := (others => '0');        -- shift register to read data in
@@ -62,21 +59,21 @@ architecture fsm of uart_rx is
                                          d <= (others => '0');          
                                          count <= (others => '0');          --This resets the counter
                                          newChar <= '0';                    
-                                 elsif en = '1' then            -- usual operation
+                                 elsif en = '1' then            -- This is if the "RESET" wasn't pressed but the "ENABLE" button was pressed
                                          case curr is               --Notice we use "case" for CHARACTERS instead of integers
-                                                 when idle =>
+                                                 when idle =>                             --This is if this was the PRESENT-STATE 
                                                         newChar <= '0';
                                                                  if maj = '0' then
                                                                          curr <= start;
                                                                  end if;
-                                                 when start =>
+                                                 when start =>                            --This is if this was the PRESENT-STATE  
                                                          d <= maj & d(7 downto 1);
                                                          count <= (others => '0');
                                                          curr <= data;
-                                                 when data =>
+                                                 when data =>                             --This is if this was the PRESENT-STATE 
                                                          if unsigned(count) < 7 then
                                                                  d <= maj & d(7 downto 1);
-                                                                 count <= std_logic_vector(unsigned(count) + 1);
+                                                                 count <= std_logic_vector(unsigned(count) + 1);     --Notice here that we use the method of changing the "COUNT" in Bit-Form to UNSIGNED form
                                                          elsif maj <= '1' then                      --Remember we use an"elsif" because we can't simply add another "if" because it creates a 2nd individual loop
                                                                  curr <= idle;
                                                                  newChar <= '1';
@@ -84,7 +81,7 @@ architecture fsm of uart_rx is
                                                          else
                                                                 curr <= idle;
                                                          end if;
-                                                 when others =>
+                                                 when others =>                           --This is good programming practice, in case any other "STATE" is detected, it go back to the First "STATE"
                                                          curr <= idle;
                                                      
                                          end case;                          --This just ends the the "CASE" we opened
