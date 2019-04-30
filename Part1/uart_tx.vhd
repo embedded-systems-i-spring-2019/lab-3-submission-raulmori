@@ -29,7 +29,7 @@ end uart_tx;
 architecture Behavioral of uart_tx is
 
         type state is (idle, start, data);      --These are the TEMPORARY "TYPES" for the Finite-State-Machine's "STATES"
-        signal curr : state := idle;
+        signal curr : state := idle;        --This is just another way of making. TEMPORARY signal of the Current "STATE" of the initial "STATE" "IDLE" 
         
         signal D :std_logic_vector(7 downto 0) := X"00";
 
