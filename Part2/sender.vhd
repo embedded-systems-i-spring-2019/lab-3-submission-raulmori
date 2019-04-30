@@ -75,7 +75,8 @@ architecture Behavioral of sender is
                                                                   if btn = '0' then
                                                                         curr <= idle;
                                                                   end if;
-                                                          end if;                
+                                                          end if;    
+                                                when others => state_reg <= idle;                  
                                         end case;
                                 end if;        
                         end if;
