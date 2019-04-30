@@ -1,4 +1,5 @@
 --Notice that this FINITE-STATE-MACHINE was made using TEMPLATES from Chapter#11 of the VHDLD book 
+--Remember that the Order of the "STATES" are "IDLE", "START", and "DATA"
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -31,15 +32,17 @@ architecture fsm of uart_rx is
              -- double flop input to fix potential metastability
              -- plus 2 extra samples to take majority vote of 3 inputs (oversampling)
              -- majority vote of samples helps mitigate noise on line
-                 process(clk) begin                     --This is the Process for the Clock
+                  
+         ----------------------------------------------------------------------         
+                 process(clk) begin                     --This is the Process for the "CLOCK"
                      if rising_edge(clk) then
                          inshift <= inshift(2 downto 0) & rx;
                      end if;
                  end process;
-         
+         ----------------------------------------------------------------------
              -- majority vote of 3 samples (oversampling)
              -- majority vote of samples helps mitigate noise on line
-                 process(inshift)                       --This is the process 
+                 process(inshift)                       --This is the process for "SHIFT Register"
                  begin
                          if (inshift(3) = '1' and inshift(2) = '1' and inshift(1) = '1') or
                             (inshift(3) = '1' and inshift(2) = '1') or
@@ -50,11 +53,11 @@ architecture fsm of uart_rx is
                              maj <= '0';
                          end if;
                  end process;
-         
+         ----------------------------------------------------------------------
              
                  process(clk) begin                 -- Finite State Machine (FSM)  process  for ingle process implementation
                          if rising_edge(clk) then
-                                 if rst = '1' then                  -- If we reset  state machine then its outputs will be                 
+                                 if rst = '1' then                  -- Here we "RESET the System so all the OUTPUTS return "0" and the Preset-State goes back to "IDLE"                 
                                          curr <= idle;
                                          d <= (others => '0');          
                                          count <= (others => '0');          --This resets the counter
@@ -88,5 +91,5 @@ architecture fsm of uart_rx is
                                  end if;                                    --This just ends the very first "if" we declared
                          end if;                                     --This just ends the very first "if" we declared
                  end process;
-
+         ----------------------------------------------------------------------
 end fsm;
