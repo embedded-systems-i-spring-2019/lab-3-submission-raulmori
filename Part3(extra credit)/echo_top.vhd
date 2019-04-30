@@ -15,7 +15,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity echo_top is
       Port (
-            TXD, btn : in std_logic;
+            TXD, btn      : in std_logic;
             clk           : in std_logic;
             char_in       : in std_logic_vector(7 downto 0);
             CTS, RTS, RXD : out std_logic);
@@ -80,7 +80,7 @@ architecture Behavioral of echo_top is
                                      
                 u4: echo port map (  
                                     clk => clk,                  --Here the Main CLOCK is connected to the INPUT of the CLOCK-DIVIDER called "CLK"
-                                    newChar => u1_out,          --Here TEMPORARY "u1_out" is connected to the INPUT of ECHO called "newChar" 
+                                    newChar => u1_out,          --Here TEMPORARY "u1_out" (OUTPUT of the BUTTON) is connected to the INPUT of ECHO called "newChar" 
                                     charin => char_in,              --Here the Main "CHAR_IN" is connected to the INPUT of the ECHO called "charin"
                                     en => u3_out,                 --Here we connect the "EN" to the OUTPUT of the "Modified-Clock"
                                     ready => u5_ready,
