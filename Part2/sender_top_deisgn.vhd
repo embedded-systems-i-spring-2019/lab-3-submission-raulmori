@@ -1,100 +1,115 @@
---This is the TOP-DESIGN part
---Remember that the "CLOCK-ENABLE" (Modified Clock.Div) will have a 25Mhz Frequency
---Remember that Calling the COMPONENTS is the Easy PART
---Step1: To know how to Connect the PORTS, we first type in all the COMPONENTS to have an idea of what INPUT and OUTPUT connections have Similar Names.
+--Remember that to make the PORT connections easier, we can visualize the Design using the RTL given to us
+--Notice we don't use a TEMPORARY variable for "CLOCK" when connecting "PORTS"
+--When Connecting PORTS we go from Right to Left
 
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
 
-entity image_top is 
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity sender_top is
         Port (
-              clk             : in std_logic;                          --This is the clock
-              vga_hs, vga_vs  : out std_logic;                          --These are the HORIZONTAL and VERTICAL parts
-              vga_r, vga_b    : out std_logic_vector (4 downto 0);
-              vga_g           : out std_logic_vector (5 downto 0)
-              );
-end image_top;
-  
-  
-architecture rtl of image_top is
-  
-          signal addrSig : std_logic_vector(17 downto 0);           --TEMPORARY Signal for the COUNTER
-          signal pixelSig : std_logic_vector(7 downto 0);
-          signal vsSig : std_logic;
-          signal hsSig :  std_logic;
-          signal vidSig : std_logic;
-          signal hcountSig : std_logic_vector(9 downto 0);
-          signal vcountSig : std_logic_vector(9 downto 0);
-          signal enSig : std_logic;
-    
-    ------------------------------------------------------------
-          component pixel_pusher is         --Here we call "PIXEL_PUSHER"                    
-                Port (
-                      clk, en, vs, vid : in std_logic;
-                      pixel   : in std_logic_vector (7 downto 0);
-                      hcount  : in std_logic_vector (9 downto 0);
-                      R, B    : out std_logic_vector (4 downto 0);
-                      G       : out std_logic_vector (5 downto 0);
-                      addr    : out std_logic_vector (17 downto 0)
-                     );
-          end component;
-    
-          ------------------------------------------------------------
-          component vga_ctrl is             --Here we call "VGA_CTRL"    
-                Port (
-                    clk : in std_logic;
-                    en : in std_logic;
-                    hcount, vcount : out std_logic_vector(9 downto 0);
-                    vid, vs, hs : out std_logic
-                     );
-          end component;
-    
-          ------------------------------------------------------------
-    
-          component clock_div is      --Here we call the Modified "Clock.Div"
-                  port(
-                      clk : in std_logic;
-                      div : out std_logic
-                      );
-          end component;
-    
-          ------------------------------------------------------------
-    
-          component picture IS          --Here we call the "PICTURE"
-              PORT (
-                  clka : IN STD_LOGIC;
-                  addra : IN STD_LOGIC_VECTOR(17 DOWNTO 0);
-                  douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
-          );
-          end component;
-          ------------------------------------------------------------
+                   TXD : in STD_LOGIC;
+                   btn : in STD_LOGIC_VECTOR (1 downto 0);
+                   clk : in STD_LOGIC;                                  --This is the "CLOCK"
+                   RXD : out STD_LOGIC;
+                   CTS : out STD_LOGIC;
+                   RTS : out STD_LOGIC);
+end sender_top;
 
 
-          begin       --Here we start declaring port maps
-              pixelPusher: pixel_pusher port map(                  --This port map is for PIXER-PUSHER (Part 2)
-                    clk => clk,                               --Here  the MAIN-CLOCK is connected to the INPUT  of the PIXER_PUSHER called "CLK"        
-                    en => enSig,                              --Here the TEMPORARY Signal "enSig" (OUTPUT of Clock.Div) is Connected to the INPUT of PIXER_PUSHER called "EN"
-                    vs => vsSig,                                   --Here the TEMPORARY Signal "vsSig" (OUTPUT of VGA_CTRL) is Connected to the INPUT of PIXER_PUSHER called "VS"
-                    pixel => pixelSig,hcount => hcountSig,vid => vidSig,
-                    R => vga_r,
-                    B => vga_b,
-                    G => vga_g,
-                    addr => addrSig);
+architecture Structural of sender_top is
+
+        signal rstbtn, btn1: std_logic;
+        signal div, snd, ready : STD_LOGIC;
+        signal char: std_logic_vector(7 downto 0);
+--------------------------------------------------------------------------       
+
+        component uart                  --Here we call "UART" which is another TOP-DESIGN
+                port (
+                      clk, en, send, rx, rst      : in std_logic;
+                      charSend                    : in std_logic_vector (7 downto 0);
+                      ready, tx, newChar          : out std_logic;
+                      charRec                     : out std_logic_vector (7 downto 0));
+        end component;
+--------------------------------------------------------------------------       
+        component debounce              --Here we call the "BUTTON"
+                Port (
+                       clk : in STD_LOGIC;
+                       btn : in STD_LOGIC;
+                       dbnc : out STD_LOGIC);
+        end component;
+        
+--------------------------------------------------------------------------       
+   
+        component clk_div               --Here we call the "CLOCK_ENABLE"
+                Port (
+                      div : out STD_LOGIC;
+                      clk : in STD_LOGIC);
+        end component;
+        
+--------------------------------------------------------------------------       
+
+        component sender                --Here we call the "SENDER" which is relative to the'UART_TX"
+                Port ( 
+                       rst : in STD_LOGIC;
+                       clk : in STD_LOGIC;
+                       en : in STD_LOGIC;
+                       btn : in STD_LOGIC;
+                       ready : in STD_LOGIC;
+                       send : out STD_LOGIC;
+                       char : out STD_LOGIC_VECTOR (7 downto 0));
+        end component;
+--------------------------------------------------------------------------       
+
     
-              my_picture: picture port map(
-                    clka => clk,                                        --Here  the MAIN-CLOCK is connected to the INPUT  of the PICTURE called "CLKA" 
-                    addra => addrSig,douta => pixelSig);                --Here the 
-    
-              clockDiv: clock_div port map(             --This is the port map for clock-divider
-                    clk => clk,                     --Here we connect the MAIN-CLOCK to the "Clock-Divider"
-                    div => enSig);                  --Here the OUTPUT of the "CLOCK.DIV" is Converted into a TEMPORARY Signal called "enSig"
-    
-              vgaCTRL: vga_ctrl port map(
-                    clk => clk,                                 --Here  the MAIN-CLOCK is connected to the INPUT  of the VGA_CTRL called "CLK"
-                    en => enSig,                            --Here the TEMPORARY Signal "enSig" (OUTPUT of Clock.Div) is Connected to the INPUT of VGA_CTRL called "EN"
-                    hcount => hcountSig,vcount => vcountSig,vid => vidSig,
-                    vs => vsSig,                            --Here the OUTPUT of "VGA_CTRL" is converted to the TEMPORARY Signal called "vsSig"
-                    hs => hsSig);
-                    vga_vs <= vsSig;vga_hs <= hsSig;
-end rtl;
+        begin                               
+                rts <= '0';                     --IMPORANT "RTS" has to be Grounded
+                cts <= '0';                     --IMPORANT "CTS" has to be Grounded
+                
+
+                clkdiv: clk_div port map(
+                                     clk=> clk,         --Here we connect the MAIN-CLOCK to the "Clock-Divider"
+                                     div =>div          --Here we connect the OUTPUT of the "Clock-Divider" to a TEMPORARY Signal
+                                        );
+                              
+                rstdbnc: debounce port map(
+                                     clk => clk,        --Here we connect the MAIN-CLOCK to one of the "BUTTONS"
+                                     btn => btn(0),     --Here we connect one of the MAIN "Bit-Button" to the INPUT of one of our BUTTON called "BTN"
+                                     dbnc => rstbtn             --Here we convert the OUTPUT of one of our "BUTTON"S into a TEMPORARY signal "RSTBTN"
+                                          );
+                        
+                btndbnc: debounce port map(
+                                     clk => clk,        --Here we connect the MAIN-CLOCK to one of the "BUTTONS"       
+                                     btn => btn(1),             --Here we connect one of the MAIN "Bit-Button" to the INPUT of one of our BUTTONS called "BTN"
+                                     dbnc => btn1              --Here we convert the OUTPUT of one of our "BUTTON"S into a TEMPORARY signal "BTN1"
+                                        );
+                
+                snder: sender port map(
+                                     clk => clk,         --Here we connect the MAIN-CLOCK to  the "SENDER"
+                                     btn => btn1,          --Here TEMPORARY Signal "BTN1" is connected to "BTN" of "SENDER"
+                                     en => div,            --Here TEMPORARY Signal "DIV" is connected to "ENABLE" of "SENDER"
+                                     ready => ready,            --Here the TEMPORARY Signal "READY (from the UART) is connected to the INPUT of "SENDER" called "READY"
+                                     rst => rstbtn,       --Here TEMPORARY Signal "RSTBTN" is connected to "RESET" of "SENDER"
+                                     send => snd,         --Here the OUTPUT of "SENDER" called "SEND"  connected to TEMPORARY signal "SND"
+                                     char => char       --Here we convert the OUTPUT of the "SENDER'S" "CHAR" into a TEMPORARY signal called "CHAR"
+                                     );
+                         
+                u5: uart port map  (
+                                     clk => clk,         --Here we connect the MAIN-CLOCK to  the "UART"
+                                     en => div,         --Here we connect the TEMPORARY signal for the "Clock_Divider" OUTPUT and connect it to the "ENABLE" of the "UART"
+                                     send => snd,        --Here the TEMPORARY Signal "SND" is connected to the INPUT of the "UART" called "SEND"
+                                     rx => TXD,            --Here we connect Main-Signal "TXD" to the "INPUT" of the UART "RX" 
+                                     rst => rstbtn,     --Here the TEMPORARY Signal "RSTBTN" (comes from the output of one of the BUTTONS) is connected to the INPUT of the "UART" called "RST"
+                                     charSend => char,          --Here the TEMPORARY Signal "CHAR" is connected to the INPUT of the "UART" called "CHARSEND"
+                                     ready => ready,         --Here we convert the OUTPUT of the "UART'S" "READY" into a TEMPORARY signal called "READY"
+                                     tx => RXD                 --Here the OUTOUT of the "UART" called "TX" is connected to the INPUT called "RXD"
+                                    );
+end Structural;
