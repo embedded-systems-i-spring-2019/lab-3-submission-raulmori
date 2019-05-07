@@ -1,6 +1,7 @@
 --Remember that to make the PORT connections easier, we can visualize the Design using the RTL given to us
 --Notice we don't use a TEMPORARY variable for "CLOCK" when connecting "PORTS"
 --When Connecting PORTS we go from Right to Left
+--For TEMPORARY Signals it goes from Left to Right
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
